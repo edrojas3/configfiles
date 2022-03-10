@@ -1,0 +1,303 @@
+# ~/.bashrc: executed by bash(1) for non-login shells.
+# see /usr/share/doc/bash/examples/startup-files (in the package bash-doc)
+# for examples
+
+# If not running interactively, don't do anything
+case $- in
+    *i*) ;;
+      *) return;;
+esac
+
+# don't put duplicate lines or lines starting with space in the history.
+# See bash(1) for more options
+HISTCONTROL=ignoreboth
+
+# append to the history file, don't overwrite it
+shopt -s histappend
+
+# for setting history length see HISTSIZE and HISTFILESIZE in bash(1)
+HISTSIZE=1000
+HISTFILESIZE=2000
+
+# check the window size after each command and, if necessary,
+# update the values of LINES and COLUMNS.
+shopt -s checkwinsize
+
+# If set, the pattern "**" used in a pathname expansion context will
+# match all files and zero or more directories and subdirectories.
+#shopt -s globstar
+
+# make less more friendly for non-text input files, see lesspipe(1)
+[ -x /usr/bin/lesspipe ] && eval "$(SHELL=/bin/sh lesspipe)"
+
+# set variable identifying the chroot you work in (used in the prompt below)
+if [ -z "${debian_chroot:-}" ] && [ -r /etc/debian_chroot ]; then
+    debian_chroot=$(cat /etc/debian_chroot)
+fi
+
+# set a fancy prompt (non-color, unless we know we "want" color)
+case "$TERM" in
+    xterm-color|*-256color) color_prompt=yes;;
+esac
+
+# uncomment for a colored prompt, if the terminal has the capability; turned
+# off by default to not distract the user: the focus in a terminal window
+# should be on the output of commands, not on the prompt
+#force_color_prompt=yes
+
+if [ -n "$force_color_prompt" ]; then
+    if [ -x /usr/bin/tput ] && tput setaf 1 >&/dev/null; then
+	# We have color support; assume it's compliant with Ecma-48
+	# (ISO/IEC-6429). (Lack of such support is extremely rare, and such
+	# a case would tend to support setf rather than setaf.)
+	color_prompt=yes
+    else
+	color_prompt=
+    fi
+fi
+
+if [ "$color_prompt" = yes ]; then
+    PS1='${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\$ '
+else
+    PS1='${debian_chroot:+($debian_chroot)}\u@\h:\w\$ '
+fi
+unset color_prompt force_color_prompt
+
+# If this is an xterm set the title to user@host:dir
+case "$TERM" in
+xterm*|rxvt*)
+    PS1="\[\e]0;${debian_chroot:+($debian_chroot)}\u@\h: \w\a\]$PS1"
+    ;;
+*)
+    ;;
+esac
+
+# enable color support of ls and also add handy aliases
+if [ -x /usr/bin/dircolors ]; then
+    test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
+    alias ls='ls --color=auto'
+    #alias dir='dir --color=auto'
+    #alias vdir='vdir --color=auto'
+
+    alias grep='grep --color=auto'
+    alias fgrep='fgrep --color=auto'
+    alias egrep='egrep --color=auto'
+fi
+
+# colored GCC warnings and errors
+#export GCC_COLORS='error=01;31:warning=01;35:note=01;36:caret=01;32:locus=01:quote=01'
+
+# some more ls aliases
+alias ll='ls -alF'
+alias la='ls -A'
+alias l='ls -CF'
+
+# User defined alias and command shortcuts
+alias restart='shutdown -r now'
+alias poweroff='shutdown -P now' 
+alias suspend='systemctl suspend'
+alias dispSetup='xrandr --output DP-1 --pos 0x1600 --output eDP-1 --pos 4000x1600'
+alias bashrc='vim ~/.bashrc'
+winDocs=/media/eduardo/048C83B08C839AB6/Users/Usuario/Documents
+
+# Remote access alias
+alias clusterio='ssh -tX claus "cd /misc/hahn2 ; bash --login"'
+alias ada='ssh -tX ada "cd /mnt/MD1200B/egarza/erojas ; bash --login"'
+alias mount_tezca='sshfs $HOME/mri/tezca reduardo@claus:/misc/tezca/reduardo'
+alias mount_hahn2='sshfs $HOME/mri/hahn2 reduardo@claus:/misc/hahn2/reduardo'
+alias mount_alfonso='sshfs $HOME/mri/alfonso reduardo@claus:/misc/hahn2/alfonso'
+alias mount_ada='sshfs $HOME/mri/ada erojas@ada:$ADA'
+
+alias unmount_tezca='fusermount -u $HOME/mri/tezca'
+
+export TEZCA='/misc/tezca/reduardo'
+export ADA='/mnt/MD1200B/egarza/erojas'
+export HAHN2=/home/eduardo/mri/hahn2
+export MACADATA=/home/eduardo/mri/alfonso/primates/monkeys/data
+
+# Add an "alert" alias for long running commands.  Use like so:
+#   sleep 10; alert
+alias alert='notify-send --urgency=low -i "$([ $? = 0 ] && echo terminal || echo error)" "$(history|tail -n1|sed -e '\''s/^\s*[0-9]\+\s*//;s/[;&|]\s*alert$//'\'')"'
+
+# Alias definitions.
+# You may want to put all your additions into a separate file like
+# ~/.bash_aliases, instead of adding them here directly.
+# See /usr/share/doc/bash-doc/examples in the bash-doc package.
+
+if [ -f ~/.bash_aliases ]; then
+    . ~/.bash_aliases
+fi
+
+# enable programmable completion features (you don't need to enable
+# this, if it's already enabled in /etc/bash.bashrc and /etc/profile
+# sources /etc/bash.bashrc).
+if ! shopt -oq posix; then
+  if [ -f /usr/share/bash-completion/bash_completion ]; then
+    . /usr/share/bash-completion/bash_completion
+  elif [ -f /etc/bash_completion ]; then
+    . /etc/bash_completion
+  fi
+fi
+
+# >>> conda initialize >>>
+# !! Contents within this block are managed by 'conda init' !!
+__conda_setup="$('/home/eduardo/anaconda3/bin/conda' 'shell.bash' 'hook' 2> /dev/null)"
+if [ $? -eq 0 ]; then
+    eval "$__conda_setup"
+else
+    if [ -f "/home/eduardo/anaconda3/etc/profile.d/conda.sh" ]; then
+        . "/home/eduardo/anaconda3/etc/profile.d/conda.sh"
+    else
+        export PATH="/home/eduardo/anaconda3/bin:$PATH"
+    fi
+fi
+unset __conda_setup
+# <<< conda initialize <<<
+
+# User bin
+#export PATH=$PATH:$HOME/mri/resources/nhp_data_processing/code:$HOME/mri/resources/nhp_data_processing/utils
+export PATH=$PATH:$HOME/mri/hahn2/nhp_data_processing/code:$HOME/mri/hahn2/nhp_data_processing/utils
+
+
+# Java
+JAVA_HOME=/usr/java/jdk1.8.0_202
+
+# Freesurfer
+export FREESURFER_HOME=/usr/local/freesurfer
+export MNI_DATAPATH=/usr/local/freesurfer/mni/data
+source $FREESURFER_HOME/SetUpFreeSurfer.sh
+
+# Github
+export PTA=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
+export REPO=$HOME/mri/resources/nhp_data_processing
+export REPO_TZ=$HOME/mri/tezca/resources/nhp_data_processing
+export REPO_HAHN=$HOME/mri/hahn2/nhp_data_processing
+
+# AFNI
+export AFNI_HOME=$HOME/abin
+export PATH=$PATH:$AFNI_HOME
+
+# shfiles for nhp analysis
+export NHP=/home/eduardo/mri/resources/nhp_data_processing
+export PATH=$PATH:$NHP
+
+# databases
+export PRIMEDE=$HOME/mri/data/primeDE
+export PRIMEDE_TZ=$HOME/mri/tezca/data/primeDE
+export ION=$PRIMEDE/site-ion
+export ION_TZ=$PRIMEDE_TZ/site-ion
+export ECNU=$PRIMEDE/site-ecnu
+export ECNU_TZ=$PRIMEDE_TZ/site-ecnu
+export UCDAVIS=$PRIMEDE/site-ucdavis
+export UCDAVIS_ALF=~/mri/alfonso
+export NMTDIR=$HOME/mri/resources/atlases_and_templates/NMT_v2.0_sym/NMT_v2.0_sym_05mm
+export NMTDIR_TZ=$HOME/mri/tezca/resources/atlases_and_templates/NMT_v2.0_sym/NMT_v2.0_sym_05mm
+export NMT=$NMTDIR/NMT_v2.0_sym_05mm.nii.gz
+export NMT_TZ=$NMTDIR_TZ/NMT_v2.0_sym_05mm.nii.gz
+export MNI_macaque=$HOME/mri/resources/atlases_and_templates/MNI_macaque/macaque_25_model-MNI.nii
+export NMT_LH=$NMTDIR/supplemental_masks/NMT_v2.0_sym_05mm_L_mask.nii.gz
+export NMT_RH=$NMTDIR/supplemental_masks/NMT_v2.0_sym_05mm_R_mask.nii.gz
+
+
+
+# Nipype-tutorial
+alias nipypeTutorial='docker run -it --rm -v /home/eduardo/mri/tools/nipype_tutorial/data:/data -v /home/eduardo/mri/tools/nipype_tutorial/out:/out -p 8888:8888 miykael/nipype_tutorial'
+#alias nipype='docker run -it --rm --name nipype -v /home/eduardo/mri:/work nipype/nipype'
+
+# precon_all
+export PCP_PATH=$HOME/mri/tools/precon_all
+
+PATH=$PATH:$JAVA_HOME/bin:$PCP_PATH/bin
+
+# FSL configuration file
+#  - to be sourced by the user, typically in .bashrc or equivalent
+#  - note that the user should set
+
+# Written by Mark Jenkinson, FMRIB Analysis Group, University of Oxford
+# Modified for Debian by Michael Hanke <michael.hanke@gmail.com>
+
+# clean out previous fsl PATH components: DO NOT EDIT THE NEXT TWO LINES
+PATH=$( echo $PATH | tr ":" "\n" | grep  -v "/usr/lib/fsl/" | tr -s "\n" ":" | sed 's/:$//')
+LD_LIBRARY_PATH=$( echo $LD_LIBRARY_PATH | tr ":" "\n" | grep  -v "/usr/lib/fsl/" | tr -s "\n" ":" | sed 's/:$//')
+
+#### Set up standard FSL user environment variables ####
+
+# Debian has a fixed FSLDIR
+FSLDIR=/usr/share/fsl/5.0
+
+# Possum is installed in the same directory
+POSSUMDIR=$FSLDIR
+
+# add the fsl binary path to the search path
+PATH=/usr/lib/fsl/5.0:$PATH
+
+# The following variable selects the default output image type
+# Legal values are:
+# NIFTI, NIFTI_PAIR, NIFTI_GZ, NIFTI_PAIR_GZ
+# This would typically be overwritten in ${HOME}/.fsl/fsl.sh if the user
+# wished to write files with a different format
+FSLOUTPUTTYPE=NIFTI_GZ
+
+# Comment out the definition of FSLMULTIFILEQUIT to enable
+#  FSL programs to soldier on after detecting multiple image
+#  files with the same basename ( e.g. epi.hdr and epi.nii )
+FSLMULTIFILEQUIT=TRUE
+
+# The following variables specify paths for programs and can be changed
+# or replaced by different programs, by default set sensible Debian-defaults
+FSLTCLSH=/usr/bin/tclsh
+FSLWISH=/usr/bin/wish
+FSLBROWSER=/etc/alternatives/x-www-browser
+
+
+
+# The following variables are used for running code in parallel across
+#  several machines ( i.e. for FDT )
+# for a cluster engine setup see below
+FSLLOCKDIR=
+FSLMACHINELIST=
+FSLREMOTECALL=
+
+# If set, tell FSL to use Sun Gridengine to submit jobs instead of running them
+# directly on the machine. If unset, no attempt will be made to utilize
+# gridengine, even if it is running. By default SGE is not utilized.
+#FSLPARALLEL=1
+
+# Mail setup for gridengine jobs. See man qsub (-m option) for all possible
+# settings. By default no email is sent.
+FSLCLUSTER_MAILOPTS="n"
+
+# default queue for job submissions
+#FSLCLUSTER_DEFAULT_QUEUE="all.q"
+
+
+
+###################################################
+####    DO NOT ADD ANYTHING BELOW THIS LINE    ####
+###################################################
+
+export FSLDIR POSSUMDIR PATH FSLMULTIFILEQUIT FSLOUTPUTTYPE FSLTCLSH \
+       FSLWISH FSLBROWSER FSLLOCKDIR FSLMACHINELIST FSLREMOTECALL
+
+
+# Configure the linker search path for Debian FSLs internal shared libraries
+LD_LIBRARY_PATH=/usr/lib/fsl/5.0${LD_LIBRARY_PATH:+:${LD_LIBRARY_PATH}}
+export LD_LIBRARY_PATH
+
+
+# load user configuration
+if [ -f "${HOME}/.fslconf/fsl.sh" ] ; then
+  . "${HOME}/.fslconf/fsl.sh" ;
+fi
+
+# auto-inserted by @update.afni.binaries :
+export PATH=$PATH:/home/eduardo/abin
+
+# auto-inserted by @update.afni.binaries :
+#    set up tab completion for AFNI programs
+if [ -f $HOME/.afni/help/all_progs.COMP.bash ]
+then
+   source $HOME/.afni/help/all_progs.COMP.bash
+fi
+
+export R_LIBS=$HOME/R

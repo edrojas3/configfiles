@@ -1,0 +1,25 @@
+# copy this to .ssh/config file
+Host claus
+	HostName 132.248.219.74
+	User reduardo
+	IdentityFile ~/.ssh/keys/pub_key.pub
+	ServerAliveInterval 60
+		
+Host ada
+	Hostname ada.lavis.unam.mx
+	User erojas
+	IdentityFile ~/.ssh/keys/pub_key.pub
+	ServerAliveInterval 60
+
+Host mansfield
+	HostName 132.248.142.57
+	User reduardo
+	IdentityFile ~/.ssh/keys/pub_key.pub
+	ServerAliveInterval 60
+
+Host cannabis
+	HostName 132.248.219.73
+	User reduardo
+	IdentityFile ~/.ssh/keys/pub_key.pub
+	ServerAliveInterval 60
+
